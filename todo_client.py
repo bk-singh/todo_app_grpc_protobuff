@@ -4,11 +4,13 @@ import todo_pb2
 import todo_pb2_grpc
 
 
-def status_name(status):
-    return todo_pb2.TodoResponse.Status.Name(status)
+def status_name(status_code):
+    return todo_pb2.TodoResponse.Status.Name(status_code)
 
 def print_response(response):
-    print('Status: %s --> Messaage: %s \nDetails:\n%s' % (status_name(response.status_code), response.message, response.todo))
+    print('Status: %s --> Messaage: %s' % (status_name(response.status_code), response.message))
+    if(response.todo is not None and response.status_code == 1):
+        print('Details:\n%s' % (response.todo))
 
 def addToDo(stub):
     print('-----Add Todo-----')
@@ -47,7 +49,8 @@ def deleteToDo(stub):
     print('-----Delete Todo-----')
     id = int(raw_input('Todo ID: '))
     response = stub.DeleteTodo(todo_pb2.Todo(id=id))
-    print('Status: %s\nMessaage: %s' % (status_name(response.status), response.message))
+    print_response(response)
+    # print('Status: %s\nMessaage: %s' % (status_name(response.status_name), response.message))
 
 
 def run():

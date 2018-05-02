@@ -36,7 +36,7 @@ class Todo(todo_pb2_grpc.TodosServicer):
         return todo_pb2.ListResponse(data=TODO)
 
     def UpdateTodo(self, request, context):
-        response=todo_pb2.TodoResponse(todo=request, status=2)
+        response=todo_pb2.TodoResponse(todo=request)
         todo = get_todo(request.id)
         print('UpdateTodo: '+ str(request.id))
         if todo is None:
@@ -50,9 +50,9 @@ class Todo(todo_pb2_grpc.TodosServicer):
             index = TODO.index(todo)
             if request.todo != '':
                 TODO[index].todo = request.todo
-            if request.status != 0:
+            if request.status != None and request.status != 0:
                 TODO[index].status = request.status
-
+            response.status_code = 1
             response=todo_pb2.TodoResponse(todo=TODO[index], status_code=1, message='Todo "%s" is updated to ' % (todo_old))
         return response
 
